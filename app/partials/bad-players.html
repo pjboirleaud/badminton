@@ -1,0 +1,55 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h3></h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2"/>
+		<div class="col-md-8">
+			<table class="table table-bordered table-hover table-striped">
+				<tr>
+					<th>Nom du joueur</th>
+					<th>Mail</th>
+					<th>Actions</th>
+				</tr>
+				<tr ng-repeat="(id, player) in players" ng-controller="PlayerLineController">
+					<td>
+						<input type="text" ng-model="player.name"/>
+					</td>
+					<td>
+						<input type="text" ng-model="player.mail" size="45"/>
+					</td>
+					<td>
+						<button type="button" class="btn btn-default btn-xs" ng-click="updatePlayer(id, $event)">
+							<span class="glyphicon glyphicon-pencil"></span> Modifier
+						</button>
+						<button type="button" class="btn btn-default btn-xs" ng-click="deletePlayer(id, $event)" ng-if="!playersPlayed[id]">
+							<span class="glyphicon glyphicon-trash"></span> Supprimer
+						</button>
+						<button type="button" class="btn btn-default btn-xs disabled" ng-if="playersPlayed[id]">
+							<span class="glyphicon glyphicon-trash disabled"></span> Supprimer
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Nouveau joueur: <br/>
+						<input type="text" ng-model="name"/>
+					</td>
+					<td>
+						<input type="text" ng-model="mail" size="45"/>
+					</td>
+					<td>
+						<button type="button" class="btn btn-default btn-xs" ng-click="addPlayer($event)" ng-if="mail != '' && name != ''">
+							<span class="glyphicon glyphicon-plus"></span> Créer
+						</button>
+						<button type="button" class="btn btn-default btn-xs disabled" ng-if="!(mail != '' && name != '')">
+							<span class="glyphicon glyphicon-plus disabled"></span> Créer
+						</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

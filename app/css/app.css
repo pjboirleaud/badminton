@@ -1,0 +1,24 @@
+/* app css stylesheet */
+
+td {
+	padding: 2px!important;
+}
+
+td *, #matchsFiltersContainer {
+	font-size: 12px;
+}
+
+td  {
+	text-align: center!important;
+	margin-left: auto!important;
+	margin-right: auto!important;
+}
+
+td * {
+	text-align: left;
+}
+
+.hover {
+	cursor: pointer!important;
+}
+

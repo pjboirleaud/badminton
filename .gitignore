@@ -1,0 +1,5 @@
+node_modules
+dist
+.tmp
+deploy.sh
+app/js/app-conf-deploy.js

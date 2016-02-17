@@ -1,0 +1,142 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h3></h3>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="col-md-1">
+		</div>
+		<div class="col-md-9">
+			<table class="table table-bordered table-hover table-striped">
+				<tr>
+					<th>Groupe</th>
+					<th>Date</th>
+					<th>Heure</th>
+					<th>Joueurs</th>
+					<th>Règlement</th>
+					<th>Court</th>
+					<th>Status</th>
+					<th>Actions</th>
+				</tr>
+				<tr class="matchLine" ng-repeat="(mid, match) in matchs | fbOrderBy:'date' | filter:query" ng-controller="MatchLineController">
+					<td>
+						<select ng-model="match.group">
+							<option ng-repeat="(gid, group) in groups" value="{{gid}}" ng-selected="{{gid == match.group}}">{{group.name}}</option>
+						</select>
+					</td>
+					<td>
+						<span>{{match.date}}</span>
+						<!--<input type="text" ng-model="match.date" class="match_date" size="10" /> --><!-- ng-pattern="/[0-9][0-9][0-9][0-9]\-[0-9][0-9]\-[0-9][0-9]/" ng-change="dateUpdated()"  -->
+					</td>
+					<td>
+						<input type="text" ng-model="match.hour" size="2" /> 
+					</td>
+					<td>
+						<!--<span ng-repeat="player in match.players | filter">
+						    <span class="badge alert-info">{{player.name}}</span>
+						</span>-->
+						<span ng-repeat="(pid, player) in groups[match.group].players">
+							<span class="badge alert-info hover" ng-if="match.players[pid]" ng-click="removeMatchPlayer(match.id, pid, $event)">{{player.name}}</span>
+							<span class="badge alert-danger hover" ng-if="!match.players[pid]" ng-click="addMatchPlayer(match.id, pid, $event)">{{player.name}}</span>
+						</span>
+					</td>
+					<td>
+						<select ng-model="match.paid">
+							<option ng-repeat="(pid, player) in groups[match.group].players" value="{{pid}}" ng-selected="{{pid == match.paid}}">{{player.name}}</option>
+						</select>
+					</td>
+					<td>
+						<input type="text" ng-model="match.court" size="1"/>
+					</td>
+					<td ng-switch on="match.status">
+						<span class="badge alert-danger hover" ng-switch-when="A confirmer" ng-click="switchStatus(match.id, $event)">A confirmer</span>
+						<span class="badge alert-success hover" ng-switch-when="Confirmé" ng-click="switchStatus(match.id, $event)">Confirmé</span>
+						<span class="badge alert-success hover" ng-switch-default ng-click="switchStatus(match.id, $event)">Confirmé</span>
+					</td>
+					<td>
+						<button type="button" class="btn btn-default btn-xs" ng-click="updateMatch(match.id, $event)">
+							<span class="glyphicon glyphicon-pencil"></span> Modif
+						</button>
+						<button type="button" class="btn btn-default btn-xs" ng-click="deleteMatch(match.id, $event)">
+							<span class="glyphicon glyphicon-trash"></span> Suppr
+						</button>
+						<button type="button" class="btn btn-default btn-xs" ng-click="mailMatch(match.id)">
+							<span class="glyphicon glyphicon-envelope"></span> Mail
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Nouveau match: <br/>
+						<select ng-model="group">
+							<option ng-repeat="(gid, group) in groups" value="{{gid}}">{{group.name}}</option>
+						</select>
+					</td>
+					<td>
+						<input type="text" ng-model="date" class="match_date" size="10" ng-pattern="/[0-9][0-9][0-9][0-9]\-[0-9][0-9]\-[0-9][0-9]/"/><!-- dateString -->
+					</td>
+					<td>
+						<input type="text" ng-model="hour" size="2" /> 
+					</td>
+					<td>
+						<div class="checkbox" ng-repeat="(id, player) in groups[group].players">
+							<label>
+								<input type="checkbox" ng-model="player.selected"> {{player.name}}
+								(Parties: {{stats[group][id]}}, Réglé: {{statsPaid[group][id]}})
+							</label>
+						</div>
+					</td>
+					<td>
+						<select ng-model="paid">
+							<option ng-repeat="(pid, player) in groups[group].players" value="{{pid}}">{{player.name}}</option>
+						</select>
+						<br/><i style="font-size:10px;">Moins payé (en ratio): {{players[minPaidPlayer[group]].name}}</i>
+					</td>
+					<td>
+						<input type="text" ng-model="court" size="1"/>
+					</td>
+					<td ng-switch on="status">
+						<span class="badge alert-danger hover" ng-switch-when="A confirmer" ng-click="switchStatusForCreation()">A confirmer</span>
+						<span class="badge alert-success hover" ng-switch-when="Confirmé" ng-click="switchStatusForCreation()">Confirmé</span>
+						<span class="badge alert-success hover" ng-switch-default ng-click="switchStatusForCreation()">Confirmé</span>
+					</td>
+					<td>
+						<button type="button" class="btn btn-default btn-xs" ng-click="addMatch($event)" ng-if="group != '' && date != ''">
+							<span class="glyphicon glyphicon-plus"></span> Créer
+						</button>
+						<button type="button" class="btn btn-default btn-xs disabled" ng-if="!(group != '' && date != '')">
+							<span class="glyphicon glyphicon-plus disabled"></span> Créer
+						</button>
+					</td>
+				</tr>
+			</table>
+			<!--<i style="font-size: 12px;">*: plus le ratio est élevé, plus le joueur a payé</i>-->
+		</div>
+		<div id="matchsFiltersContainer" class="col-md-2">
+			<h4> Filtrage</h4>
+				<button type="button" class="btn btn-default btn-xs" ng-click="query=''">
+					<span class="glyphicon glyphicon-remove"></span> Supprimer
+				</button>
+			<br/><br/> Chaine: <br/> <input type="text" ng-model="query"/>
+			<br/><br/> OU Date: <br/> <input type="text" ng-model="query" class="match_date"/>
+			<br/><br/><button type="button" class="btn btn-default btn-xs" ng-click="query=thisMonth">
+				Ce mois
+			</button>
+			<br/><br/><button type="button" class="btn btn-default btn-xs" ng-click="query=previousMonth">
+				Mois précédent
+			</button>
+			<br/><br/><button type="button" class="btn btn-default btn-xs" ng-click="query=thisYear">
+				Cette année
+			</button>
+			<br/><br/> OU Groupe: <br/> <select ng-model="query">
+				<option value=""></option>
+				<option ng-repeat="(g, group) in groups" value="{{g}}">{{group.name}}</option>
+			</select>
+			<br/><br/> OU Joueur: <br/> <select ng-model="query">
+				<option value=""></option>
+				<option ng-repeat="(p, player) in players" value="{{player.name}}">{{player.name}}</option>
+			</select>
+		</div>
+	</div>
+</div>

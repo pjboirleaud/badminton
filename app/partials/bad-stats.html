@@ -1,0 +1,49 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h3></h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2"/>
+		<div class="col-md-8">
+			<table class="table table-bordered table-hover table-striped">
+				<tr>
+					<th>Groupe</th>
+					<th>Statistiques</th>
+				</tr>
+				<tr ng-repeat="(gid, group) in groups">
+					<td>
+						<span>{{group.name}}</span> <!--{{paidPerGroup[gid]}} {{statsPerGroup[gid]}}-->
+					</td>
+					<td>
+						<table class="table table-bordered table-hover table-striped">
+							<tr>
+								<td></td>
+								<td style="width: 60px; text-align: center;">Parties</td>
+								<td style="width: 60px; text-align: center;">Réglé</td>
+								<td style="width: 60px; text-align: center;">Ratio*</td>
+							</tr>
+							<tr ng-repeat="(pid, player) in group.players">
+								<td>
+									{{player.name}}
+								</td>
+								<td style="width: 60px; text-align: center;">
+									<span class="badge alert-success">{{stats[gid][pid]}}</span>
+								</td>
+								<td style="width: 60px; text-align: center;">
+									<span class="badge alert-info">{{paid[gid][pid]}}</span>
+								</td>
+								<td style="width: 60px; text-align: center;">
+									<span class="badge alert-danger">{{paid[gid][pid]/stats[gid][pid]*playersPerGroup[gid] | number:3}}</span>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<i style="font-size: 12px;">*: plus le ratio est élevé, plus le joueur a payé</i>
+		</div>
+
+	</div>
+</div>
